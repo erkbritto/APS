@@ -1,0 +1,313 @@
+﻿@{
+    ViewData["Title"] = "Cálculo Emergético";
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F8F9FA;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            padding: 50px 0;
+            background: linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+        }
+
+            .header h1 {
+                font-size: 3rem;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .header p {
+                font-size: 1.2rem;
+                opacity: 0.9;
+            }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-header {
+            background-color: #2C3E50;
+            color: white;
+            font-weight: bold;
+            border-radius: 15px 15px 0 0;
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .btn-primary {
+            background-color: #1ABC9C;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #16a085;
+            }
+
+        .btn-secondary {
+            background-color: #95A5A6;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background-color: #7f8c8d;
+            }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+
+        .history-table {
+            margin-top: 30px;
+        }
+
+            .history-table th {
+                background-color: #2C3E50;
+                color: white;
+            }
+
+        .about-section {
+            margin-top: 50px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+            .about-section h2 {
+                color: #2C3E50;
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .about-section p {
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            background-color: #2C3E50;
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .header p {
+            font-size: 1rem;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Cálculo Emergético</h1>
+        <p>Calcule emergia estática e dinâmica com facilidade e precisão</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                Calcular Emergência Estática (MJ para Msej)
+            </div>
+            <div class="card-body">
+                <form asp-action="CalcularEstatico" method="post">
+                    <div class="mb-3">
+                        <label for="mj" class="form-label">Digite o valor em MJ:</label>
+                        <input type="number" step="0.01" name="mj" id="mj" class="form-control" required min="0" />
+                        @{
+                            var mjErrors = ViewData.ModelState.GetValueOrDefault("mj")?.Errors;
+                            if (mjErrors?.Count > 0)
+                            {
+                                <span class="text-danger">@mjErrors.First().ErrorMessage</span>
+                            }
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">Calcular Estático</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('mj').value=''">Limpar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Calcular Emergência Dinâmica (Redução de Estoque)
+            </div>
+            <div class="card-body">
+                <form asp-action="CalcularDinamico" method="post">
+                    <div class="mb-3">
+                        <label for="estoque" class="form-label">Digite o estoque inicial (kg):</label>
+                        <input type="number" step="0.01" name="estoque" id="estoque" class="form-control" required min="0" />
+                        @{
+                            var estoqueErrors = ViewData.ModelState.GetValueOrDefault("estoque")?.Errors;
+                            if (estoqueErrors?.Count > 0)
+                            {
+                                <span class="text-danger">@estoqueErrors.First().ErrorMessage</span>
+                            }
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">Calcular Dinâmico</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('estoque').value=''">Limpar</button>
+                </form>
+            </div>
+        </div>
+
+        @if (ViewBag.Mensagem != null)
+        {
+            <div class="result-box" id="resultBox">
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                <strong>Resultado:</strong> @ViewBag.Mensagem
+            </div>
+        }
+
+        <div class="history-table">
+            <h3>Histórico de Cálculos</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Entrada</th>
+                        <th>Resultado</th>
+                        <th>Data/Hora</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="about-section">
+            <h2>Sobre o Projeto</h2>
+            <p>
+                Este é o <strong>Software Emergético</strong>, desenvolvido como parte da APS de Arquitetura de Redes. Ele permite calcular a emergia estática e dinâmica de sistemas, ajudando a analisar o impacto ambiental e a sustentabilidade de processos.
+            </p>
+            <p>
+                <strong>Como funciona?</strong> O cálculo estático converte energia em MJ (megajoules) para Msej (megasej, uma unidade de emergia) usando um fator de transformação (1 MJ = 1.96E+04 Msej). Um alerta é exibido se o valor ultrapassar 3.56E+07 Msej, indicando alta emergia. O cálculo dinâmico simula a redução de estoque ao longo do tempo, com uma taxa de 10% por hora.
+            </p>
+            <p>
+                <strong>Como usar?</strong> Insira um valor em MJ no primeiro formulário para o cálculo estático ou um estoque inicial em kg no segundo formulário para o cálculo dinâmico. Clique em "Calcular" para ver o resultado, que será salvo automaticamente no banco de dados MySQL (servidor 192.168.1.247). Use o botão "Limpar" para reiniciar os campos.
+            </p>
+            <p>
+                Este projeto foi construído com ASP.NET Core MVC, usando C# no back-end e Bootstrap no front-end, garantindo uma interface responsiva e intuitiva. Todos os cálculos são armazenados em um banco MySQL remoto para análise posterior.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 - APS - Desenvolvido por [Seu Nome]</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const historyBody = document.getElementById('historyBody');
+            const storedHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
+
+            storedHistory.forEach(calc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${calc.tipo}</td>
+                    <td>${calc.entrada}</td>
+                    <td>${calc.resultado}</td>
+                    <td>${calc.timestamp}</td>
+                `;
+                historyBody.appendChild(row);
+            });
+
+            const resultBox = document.getElementById('resultBox');
+            if (resultBox) {
+                const messageText = resultBox.textContent || '';
+                let tipo = '';
+                let entrada = '0';
+                let resultado = '0';
+
+                if (messageText.includes('Emergia') || messageText.includes('Alerta')) {
+                    tipo = 'Estático';
+                    const words = messageText.trim().split(/\s+/);
+                    resultado = words[words.length - 1].replace('Msej', '');
+                    entrada = words[words.length - 2];
+                } else if (messageText.includes('Estoque')) {
+                    tipo = 'Dinâmico';
+                    const words = messageText.trim().split(/\s+/);
+                    resultado = words[words.length - 1].replace('kg', '');
+                    entrada = words[words.length - 3];
+                }
+
+                if (tipo) {
+                    const timestamp = new Date().toLocaleString('pt-BR');
+                    const newCalc = { tipo, entrada, resultado, timestamp };
+                    storedHistory.push(newCalc);
+
+                    if (storedHistory.length > 5) storedHistory.shift();
+
+                    localStorage.setItem('calcHistory', JSON.stringify(storedHistory));
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${tipo}</td>
+                        <td>${entrada}</td>
+                        <td>${resultado}</td>
+                        <td>${timestamp}</td>
+                    `;
+                    historyBody.appendChild(row);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
