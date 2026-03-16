@@ -1,6 +1,458 @@
-﻿@{
+@model List<APS.Models.Calculo>
+@{
     ViewData["Title"] = "Cálculo Emergético";
+    Layout = "_Layout";
 }
+
+<style>
+    body {
+        background-color: #F8F9FA;
+    }
+
+    .header {
+        text-align: center;
+        padding: 50px 0;
+        background: linear-gradient(135deg, #2C3E50 0%, #1ABC9C 100%);
+        color: white;
+        border-radius: 0 0 20px 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .header h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        background-color: #2C3E50;
+        color: white;
+        font-weight: bold;
+        border-radius: 15px 15px 0 0;
+        padding: 15px;
+        border: none;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .btn-primary {
+        background-color: #1ABC9C;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 25px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover {
+        background-color: #16a085;
+        box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+    }
+
+    .btn-danger {
+        background-color: #E74C3C;
+        border: none;
+        border-radius: 10px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #C0392B;
+    }
+
+    .btn-secondary {
+        background-color: #95A5A6;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 25px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #7f8c8d;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #ced4da;
+        padding: 12px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #1ABC9C;
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2C3E50;
+        margin-bottom: 8px;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: #D4EDDA;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #F8D7DA;
+        color: #721C24;
+    }
+
+    .alert-info {
+        background-color: #D1ECF1;
+        color: #0C5460;
+    }
+
+    .history-table {
+        margin-top: 30px;
+    }
+
+    .history-table h3 {
+        color: #2C3E50;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #2C3E50;
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+    }
+
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #F8F9FA;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        padding: 12px 15px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 30px;
+        color: #7f8c8d;
+    }
+
+    .about-section {
+        margin-top: 40px;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 40px;
+    }
+
+    .about-section h2 {
+        color: #2C3E50;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .about-section p {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #555;
+    }
+
+    .about-section strong {
+        color: #1ABC9C;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .status-badge.statico {
+        background-color: #E8F4F8;
+        color: #1ABC9C;
+    }
+
+    .status-badge.dinamico {
+        background-color: #F4E8F8;
+        color: #9B59B6;
+    }
+</style>
+
+<header class="header">
+    <h1><i class="fas fa-bolt"></i> Cálculo Emergético</h1>
+    <p>Sistema de Análise de Emergia para Sustentabilidade</p>
+</header>
+
+<div class="container pb-5">
+    @if (ViewBag.Mensagem != null)
+    {
+        <div class="alert @(ViewBag.TipoMensagem ?? "alert-info")" role="alert">
+            <i class="fas @(ViewBag.TipoMensagem == "alert-danger" ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+            <strong>@ViewBag.Mensagem</strong>
+        </div>
+    }
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-times-circle me-2"></i>
+            <strong>Erro:</strong> @ViewBag.Erro
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calculator me-2"></i> Cálculo de Emergia Estática
+                </div>
+                <div class="card-body">
+                    <form asp-action="CalcularEstatico" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label for="mj" class="form-label">Valor em MJ (Megajoules):</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="mj" id="mj" class="form-control" required min="0" placeholder="0.00" />
+                                <span class="input-group-text">MJ</span>
+                            </div>
+                            <small class="text-muted d-block mt-2">Fator de conversão: 1 MJ = 1.96E+04 Msej</small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator me-2"></i> Calcular Estático
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('mj').value=''; document.getElementById('mj').focus();">
+                                <i class="fas fa-redo me-2"></i> Limpar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-box me-2"></i> Cálculo de Emergia Dinâmica
+                </div>
+                <div class="card-body">
+                    <form asp-action="CalcularDinamico" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label for="estoque" class="form-label">Estoque Inicial (kg):</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="estoque" id="estoque" class="form-control" required min="0" placeholder="0.00" />
+                                <span class="input-group-text">kg</span>
+                            </div>
+                            <small class="text-muted d-block mt-2">Redução por hora: 10% do estoque</small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-chart-line me-2"></i> Calcular Dinâmico
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('estoque').value=''; document.getElementById('estoque').focus();">
+                                <i class="fas fa-redo me-2"></i> Limpar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-table card">
+        <div class="card-header">
+            <i class="fas fa-history me-2"></i> Histórico de Cálculos (@Model?.Count ?? 0 registros)
+        </div>
+        <div class="card-body p-0">
+            @if (Model != null && Model.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Entrada</th>
+                                <th>Resultado</th>
+                                <th>Data/Hora</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var calculo in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="status-badge @calculo.Tipo.ToLower().Replace("á", "a")">
+                                            @(calculo.Tipo == "estático" ? "Estático" : "Dinâmico")
+                                        </span>
+                                    </td>
+                                    <td>@calculo.Entrada.ToString("F2")</td>
+                                    <td>
+                                        <strong>@calculo.Resultado.ToString("F2")</strong>
+                                        <span class="text-muted ms-2 small">
+                                            @(calculo.Tipo == "estático" ? "Msej" : "kg")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>@calculo.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <form asp-action="Deletar" method="post" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@calculo.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar este cálculo?');">
+                                                <i class="fas fa-trash"></i> Deletar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-inbox fa-3x mb-3" style="color: #ccc;"></i>
+                    <p>Nenhum cálculo registrado ainda.</p>
+                    <small>Realize um cálculo acima para começar!</small>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="about-section" id="about">
+        <h2><i class="fas fa-info-circle me-2"></i> Sobre o Projeto</h2>
+        <p>
+            Este é o <strong>Sistema Emergético</strong>, desenvolvido como parte da APS (Atividades Práticas Supervisionadas) de Arquitetura e Redes de Computadores. 
+            O sistema permite calcular a <strong>emergia estática e dinâmica</strong> de sistemas, ajudando a analisar o impacto ambiental e a sustentabilidade de processos.
+        </p>
+
+        <h5 class="mt-4 mb-3"><strong><i class="fas fa-cogs me-2"></i> Como Funciona?</strong></h5>
+        <ul>
+            <li>
+                <strong>Cálculo Estático:</strong> Converte energia em MJ (megajoules) para Msej (megasej) usando o fator de transformação: 
+                <code>1 MJ = 1.96E+04 Msej</code>. Um alerta é exibido se o resultado ultrapassar <code>3.56E+07 Msej</code>, 
+                indicando alta emergia no sistema.
+            </li>
+            <li>
+                <strong>Cálculo Dinâmico:</strong> Simula a redução de estoque ao longo do tempo, com uma taxa de 10% por hora, 
+                ajudando a prever a durabilidade do recurso disponível.
+            </li>
+        </ul>
+
+        <h5 class="mt-4 mb-3"><strong><i class="fas fa-keyboard me-2"></i> Como Usar?</strong></h5>
+        <ol>
+            <li>Insira um valor em MJ no formulário <strong>Cálculo de Emergia Estática</strong> para converter para Msej</li>
+            <li>Ou insira um estoque inicial em kg no formulário <strong>Cálculo de Emergia Dinâmica</strong></li>
+            <li>Clique em <strong>"Calcular"</strong> para ver o resultado e armazená-lo no histórico</li>
+            <li>Consulte o <strong>Histórico de Cálculos</strong> para ver todos os registros anteriores</li>
+            <li>Use o botão <strong>"Deletar"</strong> para remover cálculos específicos do histórico</li>
+        </ol>
+
+        <h5 class="mt-4 mb-3"><strong><i class="fas fa-wrench me-2"></i> Tecnologias Utilizadas</strong></h5>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <ul>
+                    <li><strong>Back-end:</strong> ASP.NET Core 6.0 (MVC)</li>
+                    <li><strong>Linguagem:</strong> C# 10.0</li>
+                    <li><strong>Padrão:</strong> MVVM/MVC com Dependency Injection</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li><strong>Front-end:</strong> Bootstrap 5.3 + HTML5 + CSS3</li>
+                    <li><strong>Ícones:</strong> Font Awesome 6.5.2</li>
+                    <li><strong>Segurança:</strong> Anti-forgery tokens e validação de entrada</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4 mb-0">
+            <i class="fas fa-lightbulb me-2"></i>
+            <strong>Nota:</strong> Este projeto implementa as melhores práticas de desenvolvimento web moderno, incluindo validação de dados, 
+            tratamento de erros, interface responsiva e acessibilidade. Os dados são armazenados em memória durante a sessão para garantir máxima rapidez e simplicidade.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-hide alerts after 6 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 6000);
+        });
+
+        // Format large numbers in the table
+        const cells = document.querySelectorAll('.table tbody td');
+        cells.forEach(cell => {
+            const text = cell.textContent;
+            if (!isNaN(parseFloat(text)) && cell.previousElementSibling) {
+                const num = parseFloat(text);
+                if (num > 1000) {
+                    cell.textContent = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            }
+        });
+    });
+</script>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -13,7 +465,7 @@
     <style>
         body {
             background-color: #F8F9FA;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #333;
         }
 
@@ -24,21 +476,23 @@
             color: white;
             border-radius: 0 0 20px 20px;
             margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-            .header h1 {
-                font-size: 3rem;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-            .header p {
-                font-size: 1.2rem;
-                opacity: 0.9;
-            }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -47,12 +501,13 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-            .card:hover {
-                transform: translateY(-5px);
-            }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
 
         .card-header {
             background-color: #2C3E50;
@@ -60,6 +515,7 @@
             font-weight: bold;
             border-radius: 15px 15px 0 0;
             padding: 15px;
+            border: none;
         }
 
         .card-body {
@@ -70,67 +526,147 @@
             background-color: #1ABC9C;
             border: none;
             border-radius: 10px;
-            padding: 10px 20px;
-            transition: background-color 0.3s ease;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-            .btn-primary:hover {
-                background-color: #16a085;
-            }
+        .btn-primary:hover {
+            background-color: #16a085;
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        }
+
+        .btn-danger {
+            background-color: #E74C3C;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #C0392B;
+        }
 
         .btn-secondary {
             background-color: #95A5A6;
             border: none;
             border-radius: 10px;
-            padding: 10px 20px;
-            transition: background-color 0.3s ease;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
         }
 
-            .btn-secondary:hover {
-                background-color: #7f8c8d;
-            }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
 
         .form-control {
             border-radius: 10px;
-            border: 1px solid #ced4da;
-            padding: 10px;
+            border: 2px solid #ced4da;
+            padding: 12px;
+            transition: border-color 0.3s ease;
         }
 
-        .result-box {
-            margin-top: 20px;
-            padding: 15px;
+        .form-control:focus {
+            border-color: #1ABC9C;
+            box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #2C3E50;
+            margin-bottom: 8px;
+        }
+
+        .alert {
             border-radius: 10px;
-            background-color: #e9ecef;
-            font-weight: bold;
+            border: none;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+
+        .alert-info {
+            background-color: #D1ECF1;
+            color: #0C5460;
         }
 
         .history-table {
             margin-top: 30px;
         }
 
-            .history-table th {
-                background-color: #2C3E50;
-                color: white;
-            }
+        .history-table h3 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: #2C3E50;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #F8F9FA;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 12px 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+        }
 
         .about-section {
-            margin-top: 50px;
+            margin-top: 40px;
             padding: 30px;
             background-color: white;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-            .about-section h2 {
-                color: #2C3E50;
-                font-size: 2rem;
-                margin-bottom: 20px;
-            }
+        .about-section h2 {
+            color: #2C3E50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
 
-            .about-section p {
-                font-size: 1.1rem;
-                line-height: 1.6;
-            }
+        .about-section p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .about-section strong {
+            color: #1ABC9C;
+        }
 
         footer {
             text-align: center;
@@ -141,172 +677,269 @@
             border-radius: 20px 20px 0 0;
         }
 
-        .header p {
-            font-size: 1rem;
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .card-body {
-            padding: 15px;
+        .form-row input {
+            flex: 1;
+            min-width: 200px;
         }
 
-        .form-control {
-            width: 100%;
+        .form-row .btn {
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-badge.statico {
+            background-color: #E8F4F8;
+            color: #1ABC9C;
+        }
+
+        .status-badge.dinamico {
+            background-color: #F4E8F8;
+            color: #9B59B6;
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>Cálculo Emergético</h1>
-        <p>Calcule emergia estática e dinâmica com facilidade e precisão</p>
+        <h1><i class="fas fa-bolt"></i> Cálculo Emergético</h1>
+        <p>Sistema de Análise de Emergia para Sustentabilidade</p>
     </header>
 
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                Calcular Emergência Estática (MJ para Msej)
-            </div>
-            <div class="card-body">
-                <form asp-action="CalcularEstatico" method="post">
-                    <div class="mb-3">
-                        <label for="mj" class="form-label">Digite o valor em MJ:</label>
-                        <input type="number" step="0.01" name="mj" id="mj" class="form-control" required min="0" />
-                        @{
-                            var mjErrors = ViewData.ModelState.GetValueOrDefault("mj")?.Errors;
-                            if (mjErrors?.Count > 0)
-                            {
-                                <span class="text-danger">@mjErrors.First().ErrorMessage</span>
-                            }
-                        }
-                    </div>
-                    <button type="submit" class="btn btn-primary me-2">Calcular Estático</button>
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('mj').value=''">Limpar</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                Calcular Emergência Dinâmica (Redução de Estoque)
-            </div>
-            <div class="card-body">
-                <form asp-action="CalcularDinamico" method="post">
-                    <div class="mb-3">
-                        <label for="estoque" class="form-label">Digite o estoque inicial (kg):</label>
-                        <input type="number" step="0.01" name="estoque" id="estoque" class="form-control" required min="0" />
-                        @{
-                            var estoqueErrors = ViewData.ModelState.GetValueOrDefault("estoque")?.Errors;
-                            if (estoqueErrors?.Count > 0)
-                            {
-                                <span class="text-danger">@estoqueErrors.First().ErrorMessage</span>
-                            }
-                        }
-                    </div>
-                    <button type="submit" class="btn btn-primary me-2">Calcular Dinâmico</button>
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('estoque').value=''">Limpar</button>
-                </form>
-            </div>
-        </div>
-
+    <div class="container pb-5">
         @if (ViewBag.Mensagem != null)
         {
-            <div class="result-box" id="resultBox">
-                <i class="fas fa-check-circle me-2 text-success"></i>
-                <strong>Resultado:</strong> @ViewBag.Mensagem
+            <div class="alert @(ViewBag.TipoMensagem ?? "alert-info")" role="alert">
+                <i class="fas @(ViewBag.TipoMensagem == "alert-danger" ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+                <strong>@ViewBag.Mensagem</strong>
             </div>
         }
 
-        <div class="history-table">
-            <h3>Histórico de Cálculos</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Entrada</th>
-                        <th>Resultado</th>
-                        <th>Data/Hora</th>
-                    </tr>
-                </thead>
-                <tbody id="historyBody">
-                </tbody>
-            </table>
+        @if (ViewBag.Erro != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-times-circle me-2"></i>
+                <strong>Erro:</strong> @ViewBag.Erro
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calculator me-2"></i> Cálculo de Emergia Estática
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="CalcularEstatico" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label for="mj" class="form-label">Valor em MJ (Megajoules):</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="mj" id="mj" class="form-control" required min="0" placeholder="0.00" />
+                                    <span class="input-group-text">MJ</span>
+                                </div>
+                                <small class="text-muted d-block mt-2">Fator de conversão: 1 MJ = 1.96E+04 Msej</small>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-calculator me-2"></i> Calcular Estático
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('mj').value=''; document.getElementById('mj').focus();">
+                                    <i class="fas fa-redo me-2"></i> Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-box me-2"></i> Cálculo de Emergia Dinâmica
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="CalcularDinamico" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label for="estoque" class="form-label">Estoque Inicial (kg):</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="estoque" id="estoque" class="form-control" required min="0" placeholder="0.00" />
+                                    <span class="input-group-text">kg</span>
+                                </div>
+                                <small class="text-muted d-block mt-2">Redução por hora: 10% do estoque</small>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-chart-line me-2"></i> Calcular Dinâmico
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('estoque').value=''; document.getElementById('estoque').focus();">
+                                    <i class="fas fa-redo me-2"></i> Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-table card">
+            <div class="card-header">
+                <i class="fas fa-history me-2"></i> Histórico de Cálculos (@Model?.Count ?? 0 registros)
+            </div>
+            <div class="card-body p-0">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Entrada</th>
+                                    <th>Resultado</th>
+                                    <th>Data/Hora</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var calculo in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="status-badge @calculo.Tipo.ToLower()">
+                                                @(calculo.Tipo == "estático" ? "Estático" : "Dinâmico")
+                                            </span>
+                                        </td>
+                                        <td>@calculo.Entrada.ToString("F2")</td>
+                                        <td>
+                                            <strong>@calculo.Resultado.ToString("F2")</strong>
+                                            <span class="text-muted ms-2 small">
+                                                @(calculo.Tipo == "estático" ? "Msej" : "kg")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small>@calculo.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <form asp-action="Deletar" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@calculo.Id" />
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar este cálculo?');">
+                                                    <i class="fas fa-trash"></i> Deletar
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-inbox fa-3x mb-3" style="color: #ccc;"></i>
+                        <p>Nenhum cálculo registrado ainda.</p>
+                        <small>Realize um cálculo acima para começar!</small>
+                    </div>
+                }
+            </div>
         </div>
 
         <div class="about-section">
-            <h2>Sobre o Projeto</h2>
+            <h2><i class="fas fa-info-circle me-2"></i> Sobre o Projeto</h2>
             <p>
-                Este é o <strong>Software Emergético</strong>, desenvolvido como parte da APS de Arquitetura de Redes. Ele permite calcular a emergia estática e dinâmica de sistemas, ajudando a analisar o impacto ambiental e a sustentabilidade de processos.
+                Este é o <strong>Sistema Emergético</strong>, desenvolvido como parte da APS (Atividades Práticas Supervisionadas) de Arquitetura e Redes de Computadores. 
+                O sistema permite calcular a <strong>emergia estática e dinâmica</strong> de sistemas, ajudando a analisar o impacto ambiental e a sustentabilidade de processos.
             </p>
-            <p>
-                <strong>Como funciona?</strong> O cálculo estático converte energia em MJ (megajoules) para Msej (megasej, uma unidade de emergia) usando um fator de transformação (1 MJ = 1.96E+04 Msej). Um alerta é exibido se o valor ultrapassar 3.56E+07 Msej, indicando alta emergia. O cálculo dinâmico simula a redução de estoque ao longo do tempo, com uma taxa de 10% por hora.
-            </p>
-            <p>
-                <strong>Como usar?</strong> Insira um valor em MJ no primeiro formulário para o cálculo estático ou um estoque inicial em kg no segundo formulário para o cálculo dinâmico. Clique em "Calcular" para ver o resultado, que será salvo automaticamente no banco de dados MySQL (servidor 192.168.1.247). Use o botão "Limpar" para reiniciar os campos.
-            </p>
-            <p>
-                Este projeto foi construído com ASP.NET Core MVC, usando C# no back-end e Bootstrap no front-end, garantindo uma interface responsiva e intuitiva. Todos os cálculos são armazenados em um banco MySQL remoto para análise posterior.
-            </p>
+
+            <h5 class="mt-4 mb-3"><strong><i class="fas fa-cogs me-2"></i> Como Funciona?</strong></h5>
+            <ul>
+                <li>
+                    <strong>Cálculo Estático:</strong> Converte energia em MJ (megajoules) para Msej (megasej) usando o fator de transformação: 
+                    <code>1 MJ = 1.96E+04 Msej</code>. Um alerta é exibido se o resultado ultrapassar <code>3.56E+07 Msej</code>, 
+                    indicando alta emergia no sistema.
+                </li>
+                <li>
+                    <strong>Cálculo Dinâmico:</strong> Simula a redução de estoque ao longo do tempo, com uma taxa de 10% por hora, 
+                    ajudando a prever a durabilidade do recurso disponível.
+                </li>
+            </ul>
+
+            <h5 class="mt-4 mb-3"><strong><i class="fas fa-keyboard me-2"></i> Como Usar?</strong></h5>
+            <ol>
+                <li>Insira um valor em MJ no formulário <strong>Cálculo de Emergia Estática</strong> para converter para Msej</li>
+                <li>Ou insira um estoque inicial em kg no formulário <strong>Cálculo de Emergia Dinâmica</strong></li>
+                <li>Clique em <strong>"Calcular"</strong> para ver o resultado, que será salvo automaticamente no banco de dados</li>
+                <li>Consulte o <strong>Histórico de Cálculos</strong> para ver todos os registros anteriores</li>
+                <li>Use o botão <strong>"Deletar"</strong> para remover cálculos específicos do histórico</li>
+            </ol>
+
+            <h5 class="mt-4 mb-3"><strong><i class="fas fa-wrench me-2"></i> Tecnologias Utilizadas</strong></h5>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <ul>
+                        <li><strong>Back-end:</strong> ASP.NET Core 6.0 (MVC)</li>
+                        <li><strong>Linguagem:</strong> C#</li>
+                        <li><strong>ORM:</strong> Entity Framework Core 8.0</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul>
+                        <li><strong>Banco de Dados:</strong> MySQL 8.0</li>
+                        <li><strong>Front-end:</strong> Bootstrap 5.3 + HTML5 + CSS3</li>
+                        <li><strong>Segurança:</strong> Anti-forgery tokens</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4 mb-0">
+                <i class="fas fa-lightbulb me-2"></i>
+                <strong>Nota:</strong> Todos os cálculos são persistidos em um banco de dados MySQL de forma segura e estão disponíveis para análise futura.
+                Os dados são processados assincronamente para garantir melhor performance da aplicação.
+            </div>
         </div>
     </div>
 
     <footer>
-        <p>© 2025 - APS - Desenvolvido por [Seu Nome]</p>
+        <p><i class="fas fa-graduation-cap me-2"></i> © 2025 - APS - Sistemas Computacionais Sustentáveis</p>
+        <small>Desenvolvido com <i class="fas fa-heart" style="color: #E74C3C;"></i> usando ASP.NET Core</small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const historyBody = document.getElementById('historyBody');
-            const storedHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
-
-            storedHistory.forEach(calc => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${calc.tipo}</td>
-                    <td>${calc.entrada}</td>
-                    <td>${calc.resultado}</td>
-                    <td>${calc.timestamp}</td>
-                `;
-                historyBody.appendChild(row);
+            // Auto-hide alerts after 6 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 6000);
             });
 
-            const resultBox = document.getElementById('resultBox');
-            if (resultBox) {
-                const messageText = resultBox.textContent || '';
-                let tipo = '';
-                let entrada = '0';
-                let resultado = '0';
-
-                if (messageText.includes('Emergia') || messageText.includes('Alerta')) {
-                    tipo = 'Estático';
-                    const words = messageText.trim().split(/\s+/);
-                    resultado = words[words.length - 1].replace('Msej', '');
-                    entrada = words[words.length - 2];
-                } else if (messageText.includes('Estoque')) {
-                    tipo = 'Dinâmico';
-                    const words = messageText.trim().split(/\s+/);
-                    resultado = words[words.length - 1].replace('kg', '');
-                    entrada = words[words.length - 3];
+            // Format large numbers in the table
+            const cells = document.querySelectorAll('.table tbody td');
+            cells.forEach(cell => {
+                const text = cell.textContent;
+                if (!isNaN(parseFloat(text)) && cell.previousElementSibling) {
+                    const num = parseFloat(text);
+                    if (num > 1000) {
+                        cell.textContent = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
                 }
-
-                if (tipo) {
-                    const timestamp = new Date().toLocaleString('pt-BR');
-                    const newCalc = { tipo, entrada, resultado, timestamp };
-                    storedHistory.push(newCalc);
-
-                    if (storedHistory.length > 5) storedHistory.shift();
-
-                    localStorage.setItem('calcHistory', JSON.stringify(storedHistory));
-
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${tipo}</td>
-                        <td>${entrada}</td>
-                        <td>${resultado}</td>
-                        <td>${timestamp}</td>
-                    `;
-                    historyBody.appendChild(row);
-                }
-            }
+            });
         });
     </script>
 </body>

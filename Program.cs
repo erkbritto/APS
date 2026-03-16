@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Registrar o DatabaseService
-builder.Services.AddSingleton<DatabaseService>();
+// Registrar o DatabaseService através da interface e com escopo adequado
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 
 var app = builder.Build();
 

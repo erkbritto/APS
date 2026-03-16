@@ -1,41 +1,76 @@
-﻿using MySql.Data.MySqlClient;
-using Microsoft.Extensions.Configuration;
-using APS.Models;
+﻿using APS.Models;
+using System.Collections.Generic;
 
 namespace APS.Data
 {
-    public class DatabaseService
+    public interface IDatabaseService
     {
-        private readonly string _connectionString;
+        Task SaveCalculoAsync(Calculo calculo);
+        Task<List<Calculo>> GetAllCalculosAsync();
+        Task DeleteCalculoAsync(int id);
+    }
 
-        public DatabaseService(IConfiguration configuration)
+    public class DatabaseService : IDatabaseService
+    {
+        // Simulando um "banco de dados" em memória para evitar dependências de pacotes
+        private static readonly List<Calculo> _calculos = new();
+        private static int _nextId = 1;
+
+        public DatabaseService()
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new ArgumentNullException(nameof(configuration), "A string de conexão 'DefaultConnection' não foi encontrada no arquivo de configuração.");
         }
 
-        public void SaveCalculo(Calculo calculo)
+        public async Task SaveCalculoAsync(Calculo calculo)
         {
+            if (calculo == null)
+                throw new ArgumentNullException(nameof(calculo));
+
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-                    var command = new MySqlCommand(
-                        "INSERT INTO Calculos (Tipo, Entrada, Resultado, Timestamp) VALUES (@Tipo, @Entrada, @Resultado, @Timestamp)",
-                        connection);
-                    command.Parameters.AddWithValue("@Tipo", calculo.Tipo);
-                    command.Parameters.AddWithValue("@Entrada", calculo.Entrada);
-                    command.Parameters.AddWithValue("@Resultado", calculo.Resultado);
-                    command.Parameters.AddWithValue("@Timestamp", calculo.Timestamp);
-                    command.ExecuteNonQuery();
-                }
+                calculo.Id = _nextId++;
+                _calculos.Add(calculo);
+                await Task.CompletedTask;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao salvar no MySQL: {ex.Message}");
+                System.Diagnostics.Trace.TraceError($"Erro ao salvar cálculo: {ex}");
+                throw;
+            }
+        }
+
+        public async Task<List<Calculo>> GetAllCalculosAsync()
+        {
+            try
+            {
+                // Retorna em ordem decrescente por timestamp
+                return await Task.FromResult(
+                    _calculos.OrderByDescending(c => c.Timestamp).ToList()
+                );
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError($"Erro ao recuperar cálculos: {ex}");
+                throw;
+            }
+        }
+
+        public async Task DeleteCalculoAsync(int id)
+        {
+            try
+            {
+                var calculo = _calculos.FirstOrDefault(c => c.Id == id);
+                if (calculo != null)
+                {
+                    _calculos.Remove(calculo);
+                }
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError($"Erro ao deletar cálculo: {ex}");
                 throw;
             }
         }
     }
 }
+
